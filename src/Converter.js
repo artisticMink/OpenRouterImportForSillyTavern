@@ -79,6 +79,7 @@ export class OpenRouterChatConverter {
     await this.client.createCharacter(
       Object.assign(this.stContext.createCharacterData, {
         name: characterName,
+        system_prompt: Object.values(chat.characters)[0]?.description,
         ch_name: characterName,
         actiontype: "createcharacter",
       })
