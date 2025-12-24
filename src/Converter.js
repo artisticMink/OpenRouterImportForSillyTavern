@@ -123,8 +123,15 @@ export class OpenRouterChatConverter {
       })
     );
 
+    // V1 does not have the createdAt property
+    const getDateForSorting = (item) => {
+      return item.createdAt
+        ? new Date(item.createdAt)
+        : new Date(item.updatedAt);
+    };
+
     const newChat = Object.values(chat.messages)
-      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .sort((a, b) => getDateForSorting(a) - getDateForSorting(b))
       .map((message) => {
         const transformed = OrpgV2Transformer.transform(message);
 
