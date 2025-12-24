@@ -12,6 +12,8 @@
 3. Open the 'OpenRouter Chat Import' drawer
 4. Click on import
 
+When the import process is complete the page will refresh. You can now select the character, go to 'Manage Chat Files' and select the new chat.
+
 ## Features
 
 Chats can be added to existing characters. If there is no character with the given name, a new character will be created. If a system prompt is present, it will be added to the new character as a character-specific system prompt.
