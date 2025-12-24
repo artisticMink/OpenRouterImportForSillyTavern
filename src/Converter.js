@@ -123,17 +123,19 @@ export class OpenRouterChatConverter {
       })
     );
 
-    const newChat = Object.values(chat.messages).map((message) => {
-      const transformed = OrpgV2Transformer.transform(message);
+    const newChat = Object.values(chat.messages)
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .map((message) => {
+        const transformed = OrpgV2Transformer.transform(message);
 
-      if (transformed.is_user) {
-        transformed.name = personaName;
-      } else {
-        transformed.name = characterName;
-      }
+        if (transformed.is_user) {
+          transformed.name = personaName;
+        } else {
+          transformed.name = characterName;
+        }
 
-      return transformed;
-    });
+        return transformed;
+      });
 
     await this.#saveChat(newChat, { avatarUrl, characterName, personaName });
   }
