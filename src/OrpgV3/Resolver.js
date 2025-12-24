@@ -1,3 +1,9 @@
+/**
+ * orpg 3.0 resolver
+ * 
+ * V3 seperates message information and content into the
+ * messages and items nodes. This class resolves this relationship.
+ */
 export class Resolver {
   #itemsIndex;
 
@@ -6,6 +12,12 @@ export class Resolver {
     this.#itemsIndex = new Map(Object.entries(chat.items));
   }
 
+  /**
+   * Get a specific item from the index
+   * 
+   * @param {*} itemId 
+   * @returns 
+   */
   getItem(itemId) {
     const item = this.#itemsIndex.get(itemId);
     if (!item) {
@@ -15,6 +27,13 @@ export class Resolver {
     return item;
   }
 
+  /**
+   * Resolve a message by looking via
+   * index lookup
+   * 
+   * @param {*} message 
+   * @returns 
+   */
   resolveMessageContent(message) {
     const resolvedItems = message.items
       .map((ref) => this.getItem(ref.id))
@@ -45,22 +64,31 @@ export class Resolver {
       .join("");
   }
 
+  /**
+   * Return the flattened, sorted, message object
+   * 
+   * @returns Sorted message array
+   */
   getOrderedMessages() {
     const messages = Object.values(this.chat.messages);
 
-    const root = messages.find((m) => !m.parentMessageId);
+    // Simple convo
+    const root = messages.find((msg) => !msg.parentMessageId);
     if (!root) {
       return messages.sort(
         (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
       );
     }
 
+    // Here we go. 
+    // Messages might be out of order and need to be flattened
+    // and sorted.
     const childrenMap = new Map();
-    for (const msg of messages) {
-      if (msg.parentMessageId) {
-        const children = childrenMap.get(msg.parentMessageId) || [];
-        children.push(msg);
-        childrenMap.set(msg.parentMessageId, children);
+    for (const message of messages) {
+      if (message.parentMessageId) {
+        const children = childrenMap.get(message.parentMessageId) || [];
+        children.push(message);
+        childrenMap.set(message.parentMessageId, children);
       }
     }
 

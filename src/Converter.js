@@ -1,10 +1,11 @@
-import { Client } from "./Requests";
+import { Client } from "./Client.js";
 import { Ui } from "./Ui";
 import { Resolver as OrpgV3Resolver } from "./OrpgV3/Resolver.js";
 import { Transformer as OrpgV3Transformer } from "./OrpgV3/Transformer.js";
 import { Transformer as OrpgV2Transformer } from "./OrpgV2/Transformer.js";
 
 export class OpenRouterChatConverter {
+  // Static header for character creation
   newChatMetadata = [
     {
       chat_metadata: {},
@@ -21,6 +22,13 @@ export class OpenRouterChatConverter {
     this.client = new Client(stContext);
   }
 
+  /**
+   * Import a open router chat export
+   *
+   * Object should've been validated at this point.
+   *
+   * @param {*} chat
+   */
   import(chat) {
     switch (chat.version) {
       case "orpg.3.0":
@@ -63,8 +71,9 @@ export class OpenRouterChatConverter {
   }
 
   /**
+   * Import a chat object that complies with orpg.3.0 spec
    *
-   * @param {*} param0
+   * @param {chat, characterName, personName, avatarUrl} param0
    */
   async #importV3({ chat, characterName, personaName, avatarUrl }) {
     await this.client.createCharacter(
@@ -77,9 +86,7 @@ export class OpenRouterChatConverter {
 
     const resolver = new OrpgV3Resolver(chat);
     const orderedMessages = resolver.getOrderedMessages();
-
     const newChat = orderedMessages.map((message) => {
-
       const resolved = resolver.resolveMessageContent(message);
 
       const transformed = OrpgV3Transformer.transform(
@@ -87,7 +94,7 @@ export class OpenRouterChatConverter {
         characterName,
         personaName
       );
-      
+
       if (transformed.is_user) {
         transformed.name = personaName;
       } else {
@@ -101,8 +108,10 @@ export class OpenRouterChatConverter {
   }
 
   /**
+   * Import a chat object that complies with orpg.2.0 or
+   * orpg.1.0 spec
    *
-   * @param {*} param0
+   * @param {chat, characterName, personName, avatarUrl} param0
    */
   async #importV2({ chat, characterName, personaName, avatarUrl }) {
     await this.client.createCharacter(
@@ -114,7 +123,7 @@ export class OpenRouterChatConverter {
       })
     );
 
-    const newChat = Object.entries(chat.messages).map((message) => {
+    const newChat = Object.values(chat.messages).map((message) => {
       const transformed = OrpgV2Transformer.transform(message);
 
       if (transformed.is_user) {
@@ -130,9 +139,8 @@ export class OpenRouterChatConverter {
   }
 
   /**
-   *
    * @param {*} jsonl
-   * @param {*} param1
+   * @param { avatarUrl, characterName, personaName } param1
    * @returns
    */
   #getFileBlob(jsonl, { avatarUrl, characterName, personaName }) {
@@ -150,9 +158,8 @@ export class OpenRouterChatConverter {
   }
 
   /**
-   *
    * @param {*} newChat
-   * @param {*} param1
+   * @param { avatarUrl, characterName, personaName } param1
    */
   async #saveChat(newChat, { avatarUrl, characterName, personaName }) {
     const jsonl = [...this.newChatMetadata, ...newChat]
@@ -170,6 +177,13 @@ export class OpenRouterChatConverter {
     }
   }
 
+  /**
+   * Perform a minimal check to determine if the chat object
+   * can be imported at all.
+   *
+   * @param {*} data
+   * @returns
+   */
   validateFileStructure(data) {
     if (typeof data !== "object" || data === null) {
       throw new Error("Invalid JSON structure: expected object");

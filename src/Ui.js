@@ -1,4 +1,10 @@
 export class Ui {
+
+  /**
+   * Show a popup box
+   * 
+   * @param function importCallback 
+   */
   static showPopup(importCallback) {
     document.body.insertAdjacentHTML("beforeend", Ui.#getHtml());
 
@@ -21,6 +27,9 @@ export class Ui {
     importButton._importHandler = importHandler;
   }
 
+  /**
+   * Clean up listeners and remove popup box
+   */
   static removePopup() {
     const popupElement = document.querySelector("#orist-shadow-popup");
     if (popupElement) {

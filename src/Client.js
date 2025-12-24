@@ -5,9 +5,17 @@ export class Client {
     this.stContext = stContext;
   }
 
+  /**
+   * Import a new chat
+   * 
+   * @param {*} formData 
+   * @returns 
+   */
   async import(formData) {
     const url = "/api/chats/import";
     const headers = this.stContext.getRequestHeaders();
+
+    // Let the browser set the boundary
     delete headers['Content-Type'];
 
     return await fetch(url, {
@@ -18,6 +26,12 @@ export class Client {
     });
   }
 
+  /**
+   * Create a new character
+   * 
+   * @param {*} body 
+   * @returns 
+   */
   async createCharacter(body) {
     const url = "/api/characters/create";
 

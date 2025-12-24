@@ -1,6 +1,5 @@
 export class Transformer {
   static transform(message, characterName, personaName) {
-    message = message[1];
     const isUser = message.type === "user";
 
     return {

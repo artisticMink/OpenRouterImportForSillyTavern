@@ -8,7 +8,8 @@ function App() {
   const [error, setError] = useState(null);
 
   const fileRef = useRef(null);
-console.log(SillyTavern.getContext());
+
+  // Triggers the main import process
   function startImport(data) {
     const converter = new OpenRouterChatConverter(SillyTavern.getContext());
     if (converter.validateFileStructure(data))
@@ -66,7 +67,11 @@ console.log(SillyTavern.getContext());
         </div>
         <div class="inline-drawer-content">
           <div class="orist-file-upload-container">
-            <div>{error ? <div class="orist-error">{error}. See console for details.</div> : null}</div>
+            <div>
+              {error ? (
+                <div class="orist-error">{error}. See console for details.</div>
+              ) : null}
+            </div>
             <div>
               <input
                 id="orist-upload"
