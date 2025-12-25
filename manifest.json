@@ -6,7 +6,7 @@
     "js": "dist/index.js",
     "css": "dist/main.css",
     "author": "maver",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "homePage": "https://github.com/artisticMink/OpenRouterImportForSillyTavern.git",
     "auto_update": true
 }
