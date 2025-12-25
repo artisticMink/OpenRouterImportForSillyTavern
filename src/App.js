@@ -70,7 +70,7 @@ function App() {
             <div>
               {error ? (
                 <div class="orist-error">{error}. See console for details.</div>
-              ) : null}
+              ) : "OpenRouter Export (.json)"}
             </div>
             <div>
               <input

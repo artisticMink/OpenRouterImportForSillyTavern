@@ -1,6 +1,6 @@
 export class Transformer {
   static transform(message, characterName, personaName) {
-    const isUser = message.type === "user";
+    const isUser = message.characterId.toLowerCase() === "user" || message.characterId.toLowerCase() === "user";
 
     return {
       name: isUser ? personaName : characterName,
